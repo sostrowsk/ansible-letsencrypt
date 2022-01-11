@@ -2,52 +2,20 @@
   - apt: update_cache=yes cache_valid_time=3600
 
   - name: Install depends
-    apt: name={{ item }} state=present
-    with_items:
-      - python
-      - python-dev
-      - python-virtualenv
-      - gcc
-      - dialog
-      - libaugeas0
-      - libssl-dev
-      - libffi-dev
-      - ca-certificates
-      - python-pip
-      - git
+    apt:
+      pkg: ['virtualenv', 'gcc', 'dialog', 'libaugeas0', 'libssl-dev', 'libffi-dev', 'ca-certificates', 'git']
+      state: present
 
   - name: Install virtualenv (Debian)
-    apt: name={{ item }} state=present
-    with_items:
-      - virtualenv
-
-  - name: Install virtualenv (Debian)
-    apt: name={{ item }} state=present
-    with_items:
-      - python-virtualenv
+    apt:
+      pkg: ['python', 'python-dev', 'python-virtualenv', 'python-pip']
+      state: present
     when: ansible_distribution == 'Debian' and ansible_lsb.codename !=  "wheezy"
 
   - name: Install virtualenv (Debian)
-    apt: name={{ item }} state=present
-    with_items:
-      - python3-virtualenv
-    when: ansible_distribution == "Debian" and ansible_distribution_release == "bullseye"
-
-  - name: Install python depends
-    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
-    with_items:
-      - pip
-
-  - name: Install python depends
-    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
-    with_items:
-      - setuptools
-    when: ansible_distribution == 'Debian' and ansible_lsb.codename !=  "wheezy"
-
-  - name: Install python depends
-    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
-    with_items:
-      - python3-setuptools
+    apt:
+      pkg: ['python3', 'python3-dev', 'python3-virtualenv', 'python3-pip', 'python3-setuptools']
+      state: present
     when: ansible_distribution == "Debian" and ansible_distribution_release == "bullseye"
 
   - name: More python depends
