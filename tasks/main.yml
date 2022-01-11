@@ -20,19 +20,35 @@
     apt: name={{ item }} state=present
     with_items:
       - virtualenv
-    when: ansible_distribution == 'Debian' and ansible_lsb.codename !=  "wheezy"
 
-  - name: Install virtualenv (Debian Wheezy)
+  - name: Install virtualenv (Debian)
     apt: name={{ item }} state=present
     with_items:
       - python-virtualenv
-    when: ansible_distribution == 'Debian' and ansible_lsb.codename ==  "wheezy"
+    when: ansible_distribution == 'Debian' and ansible_lsb.codename !=  "wheezy"
+
+  - name: Install virtualenv (Debian)
+    apt: name={{ item }} state=present
+    with_items:
+      - python3-virtualenv
+    when: ansible_distribution == "Debian" and ansible_distribution_release == "bullseye"
+
+  - name: Install python depends
+    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
+    with_items:
+      - pip
 
   - name: Install python depends
     pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
     with_items:
       - setuptools
-      - pip
+    when: ansible_distribution == 'Debian' and ansible_lsb.codename !=  "wheezy"
+
+  - name: Install python depends
+    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest
+    with_items:
+      - python3-setuptools
+    when: ansible_distribution == "Debian" and ansible_distribution_release == "bullseye"
 
   - name: More python depends
     pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name=letsencrypt
